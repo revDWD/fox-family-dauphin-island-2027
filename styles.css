@@ -253,6 +253,8 @@ h2.day.today{color:var(--coral)}
 .tide-times span{font-size:.7rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted)}
 .tide-times .hi span{color:var(--accent)}
 .tide-times small{color:var(--muted);font-size:.75rem}
+.wx-tidenow{margin-top:var(--s3)}
+.wx-sub{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;font-weight:700;margin:0 0 var(--s2)}
 .wx-alert{border-left:6px solid var(--amber);background:var(--amber-soft);border-radius:var(--r-sm);padding:10px var(--s3);margin:0 0 var(--s3);font-weight:600}
 .wx-src{font-size:.85rem;color:var(--muted)}
 
@@ -307,25 +309,6 @@ details.info .kv{padding:0 var(--s3) var(--s3)}
 .code{font-family:ui-monospace,Consolas,monospace;background:var(--sand);color:var(--sand-ink);padding:2px var(--s2);border-radius:8px;font-size:1.05rem}
 [data-theme=dark] .code{background:rgba(233,211,166,.14)}
 
-/* Photos and memories */
-.photos{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:var(--s2)}
-.ph{aspect-ratio:1;border-radius:var(--r-sm);overflow:hidden;background:linear-gradient(135deg,var(--accent),var(--hero-a));border:0;padding:0;position:relative;min-height:0;display:flex;align-items:center;justify-content:center;transition:transform .2s var(--ease)}
-.ph:hover{transform:scale(1.03)}
-.ph img{width:100%;height:100%;object-fit:cover;display:block}
-.featured{width:100%;max-height:340px;object-fit:cover;border-radius:var(--r);display:block}
-.year-head{display:flex;align-items:baseline;gap:var(--s3);margin:var(--s5) 0 var(--s2)}
-.year-head h2{margin:0}
-.year-head span{color:var(--muted);font-size:.9rem}
-h3.album{font-size:.8rem;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:var(--s4) 0 var(--s2)}
-.mem{border-left:6px solid var(--coral)}
-.mem h3{font-size:1.15rem;color:var(--head);margin:var(--s1) 0}
-.mem .featured{margin-bottom:var(--s2)}
-dialog{border:0;border-radius:var(--r);padding:var(--s2);max-width:96vw;max-height:94vh;background:var(--surface);color:var(--text)}
-dialog::backdrop{background:rgba(0,10,16,.85)}
-dialog img{max-width:100%;max-height:78vh;display:block;margin:auto}
-dialog .row{margin-top:var(--s2)}
-dialog .row button{flex:1}
-dialog form{margin:0;display:contents}
 
 .toast{position:fixed;left:50%;bottom:calc(90px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--toast);color:#fff;padding:var(--s3) var(--s5);border-radius:99px;z-index:99;box-shadow:var(--shadow);animation:rise .25s var(--ease)}
 

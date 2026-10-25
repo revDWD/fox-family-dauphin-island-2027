@@ -62,8 +62,13 @@
     return { by: by, stale: r.stale, t: r.t };
   });
   const clock = (t) => { const h = +t.slice(11, 13), m = t.slice(14, 16); return (h % 12 || 12) + ':' + m + (h < 12 ? ' AM' : ' PM'); };
-  const tideRow = (date, list) => '<li class="tide-row"><div class="d">' + esc(F.weekdayShort(date)) + '<small>' + esc(F.monthShort(date) + ' ' + F.dayNum(date)) + '</small></div><ul class="tide-times">' +
-    list.map((p) => '<li class="' + (p.type === 'H' ? 'hi' : 'lo') + '"><span>' + (p.type === 'H' ? '&#9650; High' : '&#9660; Low') + '</span><b>' + esc(clock(p.t)) + '</b><small>' + (+p.v).toFixed(1) + ' ft</small></li>').join('') + '</ul></li>';
+  const tideItems = (list) => '<ul class="tide-times">' + list.map((p) => '<li class="' + (p.type === 'H' ? 'hi' : 'lo') + '"><span>' + (p.type === 'H' ? '&#9650; High' : '&#9660; Low') + '</span><b>' + esc(clock(p.t)) + '</b><small>' + (+p.v).toFixed(1) + ' ft</small></li>').join('') + '</ul>';
+  const tideRow = (date, list) => '<li class="tide-row"><div class="d">' + esc(F.weekdayShort(date)) + '<small>' + esc(F.monthShort(date) + ' ' + F.dayNum(date)) + '</small></div>' + tideItems(list) + '</li>';
+  // Today's tides, shown inside the top weather card. Fails quietly: the rest of the card is still useful.
+  const tideToday = (el, date) => tides([date]).then((x) => {
+    const list = x.by[date];
+    el.innerHTML = list && list.length ? '<h2 class="wx-sub">Tides today</h2>' + tideItems(list) : '';
+  }).catch(() => { el.innerHTML = ''; });
   const tideSection = (el, dates) => {
     el.innerHTML = '<p class="sub">Looking up the tides…</p>';
     tides(dates).then((x) => {
@@ -88,7 +93,7 @@
 
   const dayRow = (d, i, opts) => {
     const t = d.daily.time[i], tripDay = opts && opts.trip;
-    const label = i === 0 && !tripDay ? 'Today' : F.weekdayShort(t);
+    const label = F.weekdayShort(t);
     return '<li class="wx-row' + (tripDay ? ' trip' : '') + '"><div class="d">' + esc(label) + '<small>' + esc(F.monthShort(t) + ' ' + F.dayNum(t)) + '</small></div>' + ico(d.daily.weather_code[i]) +
       '<div><b>' + kind(d.daily.weather_code[i]) + '</b><div class="s">' + d.daily.precipitation_probability_max[i] + '% rain · gusts ' + Math.round(d.daily.wind_gusts_10m_max[i]) + ' mph · UV ' + Math.round(d.daily.uv_index_max[i]) + '</div></div>' +
       '<div class="hi">' + deg(d.daily.temperature_2m_max[i]) + '<small>' + deg(d.daily.temperature_2m_min[i]) + '</small></div></li>';
@@ -128,13 +133,13 @@
       const need = trip.filter((t) => d.daily.time.indexOf(t) < 0);
       const html = stale(r) + (alerts(d, trip)) +
         '<div class="card"><div class="wx-now">' + ico(c.weather_code) + '<div class="wx-big">' + deg(c.temperature_2m) + 'F</div><div><b>' + kind(c.weather_code) + '</b><div class="meta">Feels like ' + deg(c.apparent_temperature) + '</div></div></div>' +
-        '<div class="wx-stats"><div><span>Wind</span><b>' + Math.round(c.wind_speed_10m) + ' mph</b></div><div><span>Gusts</span><b>' + Math.round(c.wind_gusts_10m) + ' mph</b></div><div><span>Humidity</span><b>' + Math.round(c.relative_humidity_2m) + '%</b></div><div><span>UV today</span><b>' + Math.round(d.daily.uv_index_max[0]) + '</b></div></div></div>' +
+        '<div class="wx-stats"><div><span>Wind</span><b>' + Math.round(c.wind_speed_10m) + ' mph</b></div><div><span>Gusts</span><b>' + Math.round(c.wind_gusts_10m) + ' mph</b></div><div><span>Humidity</span><b>' + Math.round(c.relative_humidity_2m) + '%</b></div><div><span>UV today</span><b>' + Math.round(d.daily.uv_index_max[0]) + '</b></div></div><div id="wx-tide-now" class="wx-tidenow"></div></div>' +
         '<h2>Next 24 hours</h2><ul class="wx-hours" aria-label="Hourly forecast">' + hrs.map((i, n) => '<li><b>' + (n === 0 ? 'Now' : hourLabel(d.hourly.time[i])) + '</b>' + ico(d.hourly.weather_code[i]) + '<b>' + deg(d.hourly.temperature_2m[i]) + '</b><small>' + (d.hourly.precipitation_probability[i] || 0) + '% rain</small></li>').join('') + '</ul>' +
         '<h2>Our week</h2><div id="wx-trip"></div>' +
         '<h2>Tides for our week</h2><div id="wx-tides"></div>' +
-        '<h2>Next 7 days</h2><ul class="wx-list">' + d.daily.time.slice(0, 7).map((t, i) => dayRow(d, i)).join('') + '</ul>' +
         '<p class="wx-src">Forecast data by <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo.com</a>. Updated ' + esc(ago(r.t)) + '.</p>';
       body.innerHTML = html;
+      tideToday($('#wx-tide-now'), d.daily.time[0]);
       tideSection($('#wx-tides'), trip);
       const box = $('#wx-trip');
       const list = inRange.map((t) => dayRow(d, d.daily.time.indexOf(t), { trip: true }));

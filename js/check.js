@@ -46,21 +46,11 @@
     if (iso(d.date) && d.dinner !== false && !d.dinner && !F.dinnerOn(d.date)) add('info', nice(d.date), 'No dinner planned yet (the site shows "Not planned yet"). Add a dinner, or on that day tick "No dinner expected" or type a dinner note.');
   });
 
-  // Photos and memories
-  const inTrip = (s) => F.days.some((d) => d.date === s);
-  const thisYear = (x) => !x.year || x.year === F.config.year;
-  F.photos.forEach((p, i) => {
-    if (!p.album) add('warn', 'Photo ' + (i + 1), 'No album set.');
-    if (p.year && (!Number.isInteger(p.year) || p.year > F.config.year)) add('error', 'Photo ' + (i + 1), 'year "' + p.year + '" must be a whole year, not after ' + F.config.year + '.');
-    if (p.date && thisYear(p) && !inTrip(p.date)) add('warn', 'Photo ' + (i + 1), 'date "' + p.date + '" is not a day of the trip.');
-  });
-  F.memories.forEach((m, i) => {
-    if (m.year && (!Number.isInteger(m.year) || m.year > F.config.year)) add('error', 'Memory ' + (i + 1), 'year "' + m.year + '" must be a whole year, not after ' + F.config.year + '.');
-    if (m.date && thisYear(m) && !inTrip(m.date)) add('warn', 'Memory ' + (i + 1), 'date "' + m.date + '" is not a day of the trip.');
-  });
   if (F.config.lastUpdated && !iso(F.config.lastUpdated)) add('error', 'Site settings', 'lastUpdated must be YYYY-MM-DD (it is "' + F.config.lastUpdated + '").');
 
   // Houses, families, places
+  F.places.forEach((p) => { if (/\bsample\b/i.test(p.address || '')) add('info', p.name, 'Address still says "Sample" - replace it with the real address before the trip.'); });
+  F.locations.forEach((l) => { if (!l.url && l.rawUrl) add('warn', l.name, 'Website "' + l.rawUrl + '" must start with https:// (it is hidden until fixed).'); });
   dupes(F.places, (p) => p.id).forEach((id) => add('error', id, 'Two houses/places have the same name ("' + id + '"). Rename one.'));
   F.families.forEach((f) => { if (f.house && !F.house(f.house)) add('error', f.name, 'house "' + f.house + '" does not match the name of any house.'); if (!f.house) add('warn', f.name, 'No house assigned.'); });
   F.places.forEach((p) => {

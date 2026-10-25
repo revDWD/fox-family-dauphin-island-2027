@@ -4,8 +4,8 @@
 (function () {
   'use strict';
   const F = (window.FOX = window.FOX || {});
-  const DATA = ['config', 'houses', 'locations', 'families', 'schedule', 'photos', 'memories'];
-  const CODE = ['util', 'components', 'weather', 'check', 'pages', 'home', 'houses', 'photos', 'app'];
+  const DATA = ['config', 'houses', 'locations', 'families',   'schedule'];
+    const CODE = ['util', 'components', 'weather', 'check', 'pages', 'home', 'houses', 'app'];
 
   const slug = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   const clean = (v) => {
@@ -19,7 +19,8 @@
   };
   const num = (v) => (v === undefined || v === '' || v === null || isNaN(+v) ? undefined : +v);
   const coords = (o) => { ['lat', 'lng', 'zoom'].forEach((k) => { if (k in o) { const n = num(o[k]); if (n === undefined) delete o[k]; else o[k] = n; } }); return o; };
-  const rel = (o, k) => { if (typeof o[k] === 'string') o[k] = o[k].replace(/^\/+/, ''); return o; };
+  // Only http(s) links are kept, so a typo or bad value can never become a script link.
+  const webOnly = (o) => { if (o.url && !/^https?:\/\//i.test(o.url)) { o.rawUrl = o.url; delete o.url; } return o; };
   const key = (s) => String(s || '').trim().toLowerCase();
 
   function build(d) {
@@ -31,8 +32,8 @@
 
     const withId = (list) => list.map((x) => Object.assign({}, clean(x), { id: slug(x.name) }));
     F.houses = withId(d.houses).map(coords);
-    F.locations = withId(d.locations).map(coords);
-    F.families = withId(d.families).map((f) => rel(f, 'photo'));
+    F.locations = withId(d.locations).map(coords).map(webOnly);
+    F.families = withId(d.families);
 
     const ref = (list, name) => { const hit = list.find((x) => key(x.name) === key(name)); return hit ? hit.id : name; };
     F.families.forEach((f) => { if (f.house) f.house = ref(F.houses, f.house); });
@@ -49,10 +50,6 @@
       });
       return o;
     });
-
-    F.photos = clean(d.photos).map((p) => { rel(p, 'src'); if ('year' in p) { const y = num(p.year); if (y === undefined) delete p.year; else p.year = y; } return p; });
-    F.memories = clean(d.memories).map((m) => { rel(m, 'photo'); if ('year' in m) { const y = num(m.year); if (y === undefined) delete m.year; else m.year = y; } return m; });
-    F.albums = F.photos.map((p) => p.album).filter((a, i, all) => a && all.indexOf(a) === i);
   }
 
   const getJson = (name) => fetch('data/' + name + '.json', { cache: 'no-cache' }).then((r) => {

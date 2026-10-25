@@ -42,10 +42,10 @@
   };
   F.siteName = F.config.title + ' ' + F.config.year;
 
-  // The seven sections of the site: [route, emoji, label, short label for the phone bar]. Emoji appear only here and in page titles.
+  // The four sections of the site: [route, emoji, label, short label for the phone bar]. Emoji appear only here and in page titles.
   F.NAV = [
     ['home', '\u{1F3D6}\uFE0F', 'This Week', 'Week'], ['map', '\u{1F5FA}\uFE0F', 'Map', 'Map'], ['weather', '\u{1F324}\uFE0F', 'Weather', 'Weather'],
-    ['houses', '\u{1F3E0}', 'Houses & Family', 'Houses'], ['photos', '\u{1F4F8}', 'Photos & Memories', 'Photos']
+    ['houses', '\u{1F3E0}', 'Houses & Family', 'Houses']
   ];
   // Reachable pages that are not tabs (opened from the weekly table).
   F.EXTRA_PAGES = [['calendar', '\u{1F4C5}', 'Calendar']];
@@ -66,7 +66,6 @@
     restaurant: '<path d="M6 3v7a2 2 0 0 0 4 0V3M8 3v18"/><path d="M17 3c-2.5 2-3 5-3 8h3v10"/>',
     key: '<circle cx="8" cy="15" r="4"/><path d="M11 12l9-9M16 7l3 3"/>',
     users: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 21c0-4 3-6.5 6.5-6.5s6.5 2.5 6.5 6.5"/><circle cx="17.5" cy="9" r="2.5"/><path d="M17.5 14.5c2.5 0 4.5 1.8 4.5 5"/>',
-    photo: '<rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="9" cy="10" r="2"/><path d="M3 18l6-5 4 3 3-2 5 4"/>',
     heart: '<path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.5A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/>',
     menu: '<path d="M4 7h16M4 12h16M4 17h16"/>',
     sun: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>',
@@ -84,8 +83,8 @@
   F.loadLeaflet = () => {
     if (window.L) return Promise.resolve();
     return leaflet || (leaflet = new Promise((ok, fail) => {
-      const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; document.head.append(css);
-      const s = document.createElement('script'); s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      const css = document.createElement('link'); css.rel = 'stylesheet';       css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css'; css.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY='; css.crossOrigin = ''; document.head.append(css);
+            const s = document.createElement('script'); s.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js'; s.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo='; s.crossOrigin = '';
       s.onload = ok; s.onerror = () => { leaflet = null; fail(new Error('offline')); }; document.head.append(s);
     }));
   };

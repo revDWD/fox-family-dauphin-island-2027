@@ -2,20 +2,6 @@
 # Sign in at https://app.pagescms.org with GitHub and open this repository.
 # Houses, places and families are referred to by NAME (type them exactly as written elsewhere).
 
-media:
-  - name: photos
-    label: Photos
-    input: images/photos
-    output: images/photos
-    rename: safe
-    categories: [image]
-  - name: family
-    label: Family pictures
-    input: images/family
-    output: images/family
-    rename: safe
-    categories: [image]
-
 content:
   - name: schedule
     label: Schedule
@@ -115,11 +101,6 @@ content:
         label: People
         type: string
         list: true
-      - name: photo
-        label: Photo (optional)
-        type: image
-        options:
-          media: family
 
   - name: houses
     label: Houses
@@ -183,71 +164,13 @@ content:
       - name: lng
         label: Map longitude (optional)
         type: number
+      - name: url
+        label: Website (optional)
+        type: string
+        description: Full link starting with https://. Shows a Website button on the map.
       - name: description
         label: Description
         type: text
-
-  - name: photos
-    label: Photos
-    type: file
-    path: data/photos.json
-    format: json
-    list: true
-    fields:
-      - name: src
-        label: Photo
-        type: image
-        required: true
-        options:
-          media: photos
-      - name: caption
-        label: Caption
-        type: string
-      - name: album
-        label: Album
-        type: string
-        description: Any name, e.g. Beach Days. Photos with the same album name are grouped together.
-      - name: year
-        label: Year (past trips only)
-        type: number
-        description: Leave empty for this year's trip. Use e.g. 2026 for an older vacation.
-      - name: favorite
-        label: Family highlight
-        type: boolean
-        default: false
-
-  - name: memories
-    label: Memories
-    type: file
-    path: data/memories.json
-    format: json
-    list: true
-    fields:
-      - name: title
-        label: Title
-        type: string
-        required: true
-      - name: kind
-        label: Kind
-        type: select
-        default: story
-        options:
-          values: [highlight, story, moment]
-      - name: text
-        label: Story
-        type: text
-      - name: author
-        label: Written by
-        type: string
-      - name: year
-        label: Year (past trips only)
-        type: number
-        description: Leave empty for this year's trip.
-      - name: photo
-        label: Photo (optional)
-        type: image
-        options:
-          media: photos
 
   - name: config
     label: Site settings

@@ -1,7 +1,7 @@
 /* Shell: navigation, theme and text size, and the hash router. */
 (function (F) {
   const { $, esc } = F;
-  const ALIASES = { family: 'houses', gallery: 'photos', memories: 'photos', updates: 'home', more: 'home', meals: 'home' };
+  const ALIASES = { family: 'houses', gallery: 'home', photos: 'home', memories: 'home', updates: 'home', more: 'home', meals: 'home' };
   const TITLES = { check: 'Data Check' };
 
   const parts = () => (location.hash || '#/').replace(/^#\/?/, '').split('/');
